@@ -1,0 +1,55 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../buttons/fancy-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<dom-module id="alert-modal">
+
+    <template>
+        <paper-dialog id="modal" modal>
+            <div><iron-icon icon="[[icon]]"></iron-icon>&nbsp;&nbsp;[[header]]</div>
+            <p><span>[[message]]</span></p>
+            <div class="buttons">
+                <fancy-button button-class="button-primary" on-tap="onTapOkButton">Ok</fancy-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+
+        class AlertModal extends Polymer.Element {
+            static get is() {
+                return 'alert-modal';
+            }
+
+            static get properties() {
+                return {
+                    message: String,
+                    header: String,
+                    icon: String
+                };
+            }
+
+            alert(message, header, icon){
+                this.set('message', message);
+                this.set('header', header ? header : 'Error');
+                this.set('icon', icon ? icon : 'error');
+                this.open();
+            }
+
+            open(){
+                this.$.modal.open();
+            }
+
+            close(){
+                this.$.modal.close();
+            }
+
+            onTapOkButton(){
+                this.close();
+            }
+
+        }
+        window.customElements.define(AlertModal.is, AlertModal);
+    </script>
+
+</dom-module>

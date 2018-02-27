@@ -1,0 +1,77 @@
+<link rel="import" href="./base-element.html">
+<dom-module id="base-service-element">
+    <script>
+
+        class BaseServiceElement extends BaseElement {
+
+            static get is() {
+                return 'base-service-element';
+            }
+
+            static get properties(){
+                return {
+                    baseUrl: String
+                }
+            }
+
+            findAll(){
+                let self = this;
+                return new Promise(function(resolve, reject){
+                    jQuery.ajax(self.baseUrl, {
+                        contentType: 'application/json'
+                    }).done(function (items) {
+                        resolve(items);
+                    }).fail(function (xhr, status, error) {
+                        reject(error);
+                    });
+                });
+            }
+
+            add(item){
+                let self = this;
+                return new Promise(function(resolve, reject) {
+                    jQuery.ajax(self.baseUrl, {
+                        method: 'POST',
+                        data: JSON.stringify(item),
+                        contentType: 'application/json'
+                    }).done(function (response) {
+                        resolve(response);
+                    }).fail(function (xhr, status, error) {
+                        reject(error);
+                    });
+                });
+            }
+
+            update(item){
+                let self = this;
+                return new Promise(function(resolve, reject) {
+                    jQuery.ajax(self.baseUrl + '/' + item.id, {
+                        method: 'PATCH',
+                        data: JSON.stringify(item),
+                        contentType: 'application/json'
+                    }).done(function (response) {
+                        resolve(response);
+                    }).fail(function (xhr, status, error) {
+                        reject(error);
+                    });
+                });
+            }
+
+            remove(id){
+                let self = this;
+                return new Promise(function(resolve, reject) {
+                    jQuery.ajax(self.baseUrl + '/' + id, {
+                        method: 'DELETE',
+                        contentType: 'application/json'
+                    }).done(function () {
+                        resolve();
+                    }).fail(function (xhr, status, error) {
+                        reject(error);
+                    });
+                });
+            }
+        }
+
+        window.customElements.define(BaseServiceElement.is, BaseServiceElement);
+    </script>
+</dom-module>

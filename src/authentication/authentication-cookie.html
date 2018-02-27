@@ -1,0 +1,23 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<dom-module id="authentication-cookie">
+    <script>
+        class AuthenticationCookie extends Polymer.Element {
+            static get is() {
+                return 'authentication-cookie';
+            }
+
+            ready(){
+                super.ready();
+                //Cookies.set('cookieName', 'cookieValue');
+            }
+
+            getValue(){
+                return '';
+                //return Cookies.get('cookieName');
+            }
+
+        }
+        window.customElements.define(AuthenticationCookie.is, AuthenticationCookie);
+    </script>
+
+</dom-module>

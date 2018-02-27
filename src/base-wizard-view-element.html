@@ -1,0 +1,68 @@
+<link rel="import" href="./base-element.html">
+
+<dom-module id="base-wizard-view-element">
+    <script>
+
+        class BaseWizardViewElement extends BaseElement {
+
+            static get is() {
+                return 'base-wizard-view-element';
+            }
+
+            static get properties() {
+                return {
+                    visible: {
+                        type: Boolean,
+                        value: false
+                    }
+                }
+            }
+
+            show(){
+                this.set('visible', true);
+                this.onShow();
+            }
+
+            hide(){
+                this.set('visible', false);
+                this.onHide();
+            }
+
+            onShow(){
+
+            }
+
+            onHide(){
+
+            }
+
+            validateAndSubmit(){
+                let self = this;
+                return new Promise(function(resolve, reject){
+                    self.validate().then(function(){
+                        return self.submit();
+                    }).then(function(){
+                        resolve();
+                    }).catch(function(error){
+                        reject(error);
+                    });
+                });
+            }
+
+            validate(){
+                return new Promise(function(resolve){
+                    resolve();
+                });
+            }
+
+            submit(){
+                return new Promise(function(resolve){
+                    resolve();
+                });
+            }
+
+        }
+
+        window.customElements.define(BaseWizardViewElement.is, BaseWizardViewElement);
+    </script>
+</dom-module>

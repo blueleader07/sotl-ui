@@ -1,0 +1,73 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<dom-module id="environment-properties">
+
+    <script>
+
+        var PRODUCTION_HOST_NAMES = ['comp2-aps.lmig.com','fin-salescomp-static-ui.uscm.libertyec.com'];
+        var PERF_HOST_NAMES = ['comp2-performance.lmig.com','fin-salescomp-static-ui-performance.np.uscm.libertyec.com'];
+        var TEST_HOST_NAMES = ['comp2-test.lmig.com','fin-salescomp-static-ui-test.np.uscm.libertyec.com'];
+        var DEV_HOST_NAMES = ['comp2-develop.lmig.com','fin-salescomp-static-ui-develop.np.uscm.libertyec.com'];
+        var LOCALHOST = 'localhost';
+
+        var PROPS = {
+            'grid-service-url': ['http://localhost:8080', 'https://fin-salescomp-develop.np.uscm.libertyec.com/grid-service-v0', 'https://fin-salescomp-test.np.uscm.libertyec.com/grid-service-v0', 'https://fin-salescomp-performance.np.uscm.libertyec.com/grid-service-v0', ''],
+            'reference-data-service-url': ['http://localhost:8085', 'https://fin-salescomp-develop.np.uscm.libertyec.com/reference-data-service-v0', 'https://fin-salescomp-test.np.uscm.libertyec.com/reference-data-service-v0', 'https://fin-salescomp-performance.np.uscm.libertyec.com/reference-data-service-v0', ''],
+            'system-health-service-url': ['http://localhost:8080', 'https://fin-salescomp-develop.np.uscm.libertyec.com/system-health-service-v0', 'https://fin-salescomp-test.np.uscm.libertyec.com/system-health-service-v0', 'https://fin-salescomp-performance.np.uscm.libertyec.com/system-health-service-v0', '']
+        };
+
+        class EnvironmentProperties extends Polymer.GestureEventListeners(Polymer.Element) {
+
+            static get is() {
+                return 'environment-properties';
+            }
+
+            getAppProperty(name){
+                var eid = this.getEnvironmentId();
+                return PROPS[name][eid];
+            }
+
+            getEnvironmentId(){
+                if(this._isProduction()){
+                    return 4;
+                } else if(this._isPerf()){
+                    return 3;
+                } else if(this._isTest()){
+                    return 2;
+                } else if(this._isDev()){
+                    return 1;
+                } else if(this._isLocalhost()){
+                    return 0;
+                }
+                throw "Failed to determine environment id.";
+            }
+
+            _isProduction(){
+                return PRODUCTION_HOST_NAMES.indexOf(this._getHostName()) > -1;
+            }
+
+            _isPerf(){
+                return PERF_HOST_NAMES.indexOf(this._getHostName()) > -1;
+            }
+
+            _isTest(){
+                return TEST_HOST_NAMES.indexOf(this._getHostName()) > -1;
+            }
+
+            _isDev(){
+                return DEV_HOST_NAMES.indexOf(this._getHostName()) > -1;
+            }
+
+            _isLocalhost(){
+                return this._getHostName() === LOCALHOST;
+            }
+
+            _getHostName(){
+                return window.location.hostname.toLowerCase();
+            }
+
+        }
+
+        window.customElements.define(EnvironmentProperties.is, EnvironmentProperties);
+    </script>
+</dom-module>

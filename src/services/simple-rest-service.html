@@ -1,0 +1,88 @@
+<link rel="import" href="../base-element.html">
+<dom-module id="simple-rest-service">
+    <script>
+        class SimpleRestService extends BaseElement {
+            static get is() {
+                return 'simple-rest-service';
+            }
+            send(request){
+                if(this._isEmpty(request.type)){
+                    request.type = "get";
+                }
+                request.type = request.type.toLowerCase();
+                if(request.type === "get"){
+                    return this.getRequest(request.url, request.authorization);
+                } else if(request.type === "post"){
+                    return this.postRequest(request.url, request.body, request.authorization);
+                } else if(request.type === "put"){
+                    return this.patchRequest(request.url, request.body, request.authorization);
+                } else {
+                    throw "Unknown Request Type";
+                }
+            }
+            getRequest(url, authorization) {
+                let self = this;
+                return new Promise(function(resolve, reject){
+                    jQuery.ajax(url, {
+                        beforeSend: function (xhr) {
+                            if(authorization) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + authorization);
+                            }
+                        },
+                        contentType: 'application/json',
+                        crossDomain: true
+                    }).done(function (response) {
+                        resolve(response);
+                    }).fail(function (xhr, status, error) {
+                        reject(self._buildErrorMessage(error, xhr.status));
+                    });
+                });
+            };
+            postRequest(url, body, authorization) {
+                let self = this;
+                return new Promise(function(resolve, reject){
+                    jQuery.ajax(url, {
+                        method: 'POST',
+                        beforeSend: function (xhr) {
+                            if(authorization) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + authorization);
+                            }
+                        },
+                        data: JSON.stringify(body),
+                        contentType: 'application/json',
+                        crossDomain: true
+                    }).done(function (response) {
+                        resolve(response);
+                    }).fail(function (xhr, status, error) {
+                        reject(self._buildErrorMessage(error, xhr.status));
+                    });
+                });
+            };
+            patchRequest(url, body, authorization) {
+                let self = this;
+                return new Promise(function(resolve, reject){
+                    jQuery.ajax(url, {
+                        method: 'PATCH',
+                        beforeSend: function (xhr) {
+                            if(authorization) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + authorization);
+                            }
+                        },
+                        data: JSON.stringify(body),
+                        contentType: 'application/json',
+                        crossDomain: true
+                    }).done(function (response) {
+                        resolve(response);
+                    }).fail(function (xhr, status, error) {
+                        reject(self._buildErrorMessage(error, xhr.status));
+                    });
+                });
+            };
+            _buildErrorMessage(message, code){
+                return this._isEmpty(message) ? code : message;
+            }
+        }
+        window.customElements.define(SimpleRestService.is, SimpleRestService);
+    </script>
+
+</dom-module>

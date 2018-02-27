@@ -1,0 +1,149 @@
+<link rel="import" href="../common/base-ui-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../styles/shared-ui-styles.html">
+<dom-module id="navigation-header">
+
+    <template>
+        <style include="shared-ui-styles iron-flex iron-flex-alignment">
+            .container {
+                background-color: #b8ccd9;
+            }
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--paper-blue-grey-500);
+            }
+            paper-tab {
+                --paper-tab-content: {
+                    color: var(--paper-blue-grey-900);
+                };
+                --paper-tab-content-unselected: {
+                    color: var(--paper-blue-grey-500);
+                };
+            }
+            .tab {
+                padding: 0 30px;
+            }
+            .header {
+                background-color: #b8ccd9;
+                padding-left: 26px;
+                margin: 0;
+                color: var(--paper-blue-grey-700);
+                font-weight: normal;
+            }
+        </style>
+        <app-route
+                route="{{route}}"
+                query-params="{{queryParams}}"
+                pattern="/:subpage"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+        <h2 class="header">[[heading]]</h2>
+        <div class="layout horizontal container">
+            <div>
+                <paper-tabs class="tabs" selected="{{tabIndex}}">
+                    <template is="dom-repeat" items="[[tabs]]">
+                        <paper-tab class="tab">[[item]]</paper-tab>
+                    </template>
+                </paper-tabs>
+            </div>
+            <div class="flex"></div>
+        </div>
+     </template>
+
+    <script>
+        class NavigationHeader extends BaseUiElement {
+            static get is() {
+                return 'navigation-header';
+            }
+            static get properties() {
+                return {
+                    heading: String,
+                    tabs: Array,
+                    selected: {
+                        type: Number,
+                        notify: true
+                    },
+                    route: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    queryParams: {
+                        type: Object,
+                        value: {},
+                        notify: true
+                    },
+                    subroute: {
+                        type: Object,
+                        notify: true
+                    },
+                    page: {
+                        type: String,
+                        notify: true
+                    },
+                    tabIndex: {
+                        type: Number,
+                        value: -1
+                    }
+                };
+            }
+            static get observers(){
+                return [
+                    '_subpageChanged(routeData.subpage)',
+                    '_tabIndexChanged(tabIndex)'
+                ];
+            }
+            ready(){
+                super.ready();
+                if(!this._isActivePath()) {
+                    if (this.tabIndex < 0) {
+                        this.set('page', this._formatUrlPath(this.tabs[0]));
+                        this.set('tabIndex', 0);
+                    }
+                }
+            }
+            _subpageChanged(subpage){
+                if(this._isActivePath()) {
+                    this.set('page', subpage);
+                    this.set('tabIndex', this._findTabIndex(subpage, this.tabs));
+                }
+            }
+            _findTabIndex(expected, tabs){
+                if(!expected){
+                    return 0;
+                }
+                for(let i=0; i<tabs.length; i++){
+                    let tab = tabs[i];
+                    let actual = this._formatUrlPath(tab);
+                    if(expected === actual){
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            _formatUrlPath(text){
+                text = text.toLowerCase();
+                return text.replace(/\s/g, '-');
+            }
+            _tabIndexChanged(tabIndex){
+                if(tabIndex > -1){
+                    let tabName = this.tabs[tabIndex];
+                    let page = this._formatUrlPath(tabName);
+                    if(this._isActivePath()) {
+                        this.set('route.path', '/' + page);
+                    } else {
+                        this.set('page', page);
+                    }
+                }
+            }
+            _isActivePath(){
+                let prefix = '/' + this._formatUrlPath(this.heading);
+                return this.route.prefix === prefix;
+            }
+        }
+        window.customElements.define(NavigationHeader.is, NavigationHeader);
+
+    </script>
+
+</dom-module>

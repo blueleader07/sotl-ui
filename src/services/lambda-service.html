@@ -1,0 +1,56 @@
+<link rel="import" href="simple-rest-service.html">
+<link rel="import" href="../authentication/authentication-cookie.html">
+<dom-module id="lambda-service">
+    <template>
+        <authentication-cookie id="cookie"></authentication-cookie>
+    </template>
+    <script>
+        class LambdaService extends SimpleRestService {
+            static get is() {
+                return 'lambda-service';
+            }
+
+            static get properties(){
+                return {
+                    baseUrl: String,
+                    auth: String
+                }
+            }
+
+            ready(){
+                super.ready();
+                this.set('baseUrl', this.getAppProperty('lambda-service-url'));
+                this.set('auth', this.$.cookie.getValue());
+            }
+
+            /*
+            findSummaryItemsByPaymentScheduleId(paymentScheduleId) {
+                return this.getRequest(this.baseUrl + '/summary-items/search/findByPaymentScheduleIdAndDeleted?paymentScheduleId='+paymentScheduleId+'&deleted=false', this.auth);
+            };
+
+            findTotalItemsByPaymentScheduleId(paymentScheduleId) {
+                return this.getRequest(this.baseUrl + '/total-items/search/findByPaymentScheduleIdAndDeleted?paymentScheduleId='+paymentScheduleId+'&deleted=false', this.auth);
+            };
+
+            findAllPaymentSchedulesOrderByPeriodFromDesc() {
+                return this.getRequest(this.baseUrl + '/payment-schedules?sort=periodFrom,desc', this.auth);
+            }
+
+            findPaymentScheduleByDate(dateString) {
+                return this.getRequest(this.baseUrl + '/payment-schedules/search/findByPeriodFromBeforeAndPeriodToAfterAndDeleted?before='+dateString+'&after='+dateString+'&deleted=false', this.auth);
+            }
+
+            runPaymentSchedulesQuery(){
+                return this.getRequest(this.baseUrl + '/run-payment-schedules-query', null, this.auth);
+            }
+
+            runQueries(dateString){
+                return this.getRequest(this.baseUrl + '/run-queries/' + dateString, null, this.auth);
+            }
+            */
+
+        }
+        window.customElements.define(LambdaService.is, LambdaService);
+    </script>
+
+</dom-module>

@@ -1,0 +1,140 @@
+<link rel="import" href="./environment-properties.html">
+<link rel="import" href="./modals/alert-modal.html">
+<link rel="import" href="./modals/confirmation-modal.html">
+<link rel="import" href="./modals/saving-modal.html">
+<dom-module id="base-element">
+    <script>
+        class BaseElement extends EnvironmentProperties {
+
+            static get is() {
+                return 'base-element';
+            }
+
+            _isNotEmpty(object) {
+                if (Array.isArray(object)) {
+                    return object !== null && object.length > 0;
+                }
+                return typeof object !== "undefined" && object !== null && object !== '' && JSON.stringify(object) !== '{}';
+            }
+
+            _isEmpty(object) {
+                if (Array.isArray(object)) {
+                    return object === null || object.length === 0;
+                }
+                return typeof object === "undefined" || object === null || object === '' || JSON.stringify(object) === '{}';
+            }
+
+            _clone(object) {
+                return JSON.parse(JSON.stringify(object));
+            }
+
+            _findItemById(itemId, items) {
+                if (this._isNotEmpty(itemId)) {
+                    if (this._isNotEmpty(items)) {
+                        for (var i = 0; i < items.length; i++) {
+                            var item = items[i];
+                            if (itemId == item.id) {
+                                return item;
+                            }
+                        }
+                    }
+                }
+                return {};
+            }
+
+            _findItemIndexById(itemId, items) {
+                if (this._isNotEmpty(itemId)) {
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if (itemId == item.id) {
+                            return i;
+                        }
+                    }
+                }
+                return -1;
+            }
+
+            _findItemIndexByCode(itemCode, items) {
+                if (this._isNotEmpty(itemCode)) {
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if (itemCode == item.code) {
+                            return i;
+                        }
+                    }
+                }
+                return -1;
+            }
+
+
+            alert(message, header, icon){
+                let alertModal = document.querySelector('alert-modal');
+                if(!alertModal){
+                    alertModal = document.createElement('alert-modal');
+                    let body = document.querySelector('body');
+                    Polymer.dom(body).appendChild(alertModal);
+                }
+                return alertModal.alert(message, header, icon);
+            }
+
+            confirm(message){
+                let confirmationModal = document.querySelector('confirmation-modal');
+                if(!confirmationModal){
+                    confirmationModal = document.createElement('confirmation-modal');
+                    let body = document.querySelector('body');
+                    Polymer.dom(body).appendChild(confirmationModal);
+                }
+                return confirmationModal.confirm(message);
+            }
+
+            saving(isSaving){
+                if(isSaving) {
+                    this._getSavingModal().open();
+                } else {
+                    this._getSavingModal().close();
+                }
+            }
+
+            savingError(error){
+                this._getSavingModal().set('error', error);
+            }
+
+            _getSavingModal(){
+                let savingModal = document.querySelector('saving-modal');
+                if(!savingModal){
+                    savingModal = document.createElement('saving-modal');
+                    let body = document.querySelector('body');
+                    Polymer.dom(body).appendChild(savingModal);
+                }
+                return savingModal;
+            }
+
+            _buildGenericErrorMessage(error){
+                return 'An error occurred: ' + error + '.  Please contact support if you need help.';
+            }
+
+            _formatAmount(amount, decimal){
+                let formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: decimal ? decimal  : 2
+                });
+                if(this._isNotEmpty(amount)){
+                    if(amount < 0) {
+                        let value = formatter.format(amount * -1);
+                        return value.slice(0, 1) + "("  + value.slice(1) + ")";
+                    }
+                    return formatter.format(amount);
+                }
+                return 0;
+            }
+
+            _getDifference(a, b){
+                return Number(Math.abs(a - b));
+            }
+
+        }
+
+        window.customElements.define(BaseElement.is, BaseElement);
+    </script>
+</dom-module>

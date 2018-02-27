@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../styles/shared-ui-styles.html">
+<dom-module id="fancy-button">
+
+    <template>
+        <style include="shared-ui-styles"></style>
+        <paper-button class$="[[buttonClass]]">
+            <slot></slot>
+        </paper-button>
+    </template>
+
+    <script>
+
+        class FancyButton extends Polymer.Element {
+            static get is() {
+                return 'fancy-button';
+            }
+
+            static get properties() {
+                return {
+                    buttonClass: {
+                        type: String,
+                        value: 'button-default'
+                    }
+                };
+            }
+
+        }
+        window.customElements.define(FancyButton.is, FancyButton);
+    </script>
+
+</dom-module>

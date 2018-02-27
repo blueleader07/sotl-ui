@@ -1,0 +1,356 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="./common/base-ui-element.html">
+<link rel="import" href="app-icons.html">
+<link rel="import" href="pages/statements-page.html">
+
+<dom-module id="sotl-ui-app">
+  <template>
+    <style>
+
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        background-color: #eee;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-drawer {
+        --app-drawer-content-container: {
+          box-shadow: 1px 0 2px 1px rgba(0,0,0,0.18);
+        }
+        --app-drawer-scrim-background: rgba(179, 157, 219, 0.5);
+      }
+
+      .main-header {
+        color: #FFFFFF;
+        background: url('/images/safeco-background.jpg');
+        background-size: cover;
+      }
+
+      .main-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .logo-toolbar paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        background-color: gray;
+      }
+
+      .drawer-list a, .drawer-list a:visited {
+        display: block;
+        padding: 0 16px;
+        line-height: 40px;
+        text-decoration: none;
+        font-size: 0.9em;
+        color: var(--app-secondary-color);
+      }
+
+      .drawer-list a:hover {
+        background-color: #EEEEEE;
+      }
+
+      .drawer-list a .icon {
+        color: #707070;
+      }
+
+      .drawer-list a .text {
+        color: #3572b0;
+        vertical-align: middle;
+      }
+
+      .drawer-list a.iron-selected {
+        border-left: 3px solid #5381ac;
+        background-color: #d4e0ea;
+        border-top: 1px solid #d8d8d9;
+        border-bottom: 1px solid #d8d8d9;
+      }
+
+      .drawer-list a.subroute {
+        padding-left: 32px;
+      }
+
+      .drawer-list a .text:hover {
+        text-decoration: underline;
+      }
+
+      .category {
+        font-size: 0.8em;
+        color: #666666;
+        padding: 10px;
+      }
+
+      .drawer-menu-header {
+        background-color: #616265;
+        color: #FFFFFF;
+        display: block;
+        padding: 0px 16px;
+        height: 50px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.9em;
+        cursor: pointer;
+      }
+
+      [upside-down] {
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+        transition: all 0.2s !important;
+      }
+
+      .logo-toolbar {
+        background-color: #002664;
+        color: #FFFFFF;
+      }
+
+      .menu-spacer {
+        @apply(--layout-flex);
+      }
+
+      .container-vertical {
+        @apply(--layout-vertical);
+      }
+
+      .row-vertical-flex {
+        @apply(--layout-flex);
+      }
+
+      .navigation-tabs[narrow-layout] {
+        display: none;
+      }
+
+    </style>
+    <iron-media-query query="(max-width: 800px)" query-matches="{{narrow}}"></iron-media-query>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+            route="{{route}}"
+            pattern="[[rootPattern]]:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout id="drawerLayout" style="position: static">
+      <app-drawer id="drawer" slot="drawer">
+
+        <app-header-layout style="height:100%; overflow: auto;">
+
+          <div class="drawer-content">
+            <div class="logo-toolbar">
+              <img src="/images/safeco_blue_logo.jpg" height="64px" style="display: block"/>
+            </div>
+            <div class="drawer-menu-header container-vertical" on-tap="toggleMenu1">
+              <div class="row-vertical-flex"></div>
+              <div>
+                Agent Dashboard
+                <paper-icon-button icon="arrow-drop-down" id="menu1ToggleButton"></paper-icon-button>
+              </div>
+            </div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+              <a name="statements" href="/statements"><iron-icon icon="description"></iron-icon>&nbsp;&nbsp;Statements</a>
+            </iron-selector>
+          </div>
+
+        </app-header-layout>
+
+      </app-drawer>
+
+      <app-header-layout>
+
+        <app-header class="main-header" fixed condenses effects="waterfall" slot="header">
+          <app-toolbar>
+            <paper-icon-button icon="menu" on-tap="onTapMenuButton"></paper-icon-button>
+            <div main-title></div>
+          </app-toolbar>
+          <app-toolbar></app-toolbar>
+          <app-toolbar>
+            <div spacer>
+              <paper-tabs class="navigation-tabs" narrow-layout$="{{narrow}}" selected="[[selectedSection]]">
+                <paper-tab on-tap="onSelectMenu1">OAuth2 Management</paper-tab>
+                <paper-tab on-tap="onSelectMenu2">This Application</paper-tab>
+              </paper-tabs>
+            </div>
+            <div class="menu-spacer"></div>
+            <div>OAuth2 Management</div>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages
+                id="pages"
+                selected="[[page]]"
+                attr-for-selected="name"
+                fallback-selection="view404"
+                role="main">
+          <statements-page name="statements"></statements-page>
+        </iron-pages>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+
+    </app-header-layout>
+
+  </template>
+
+  <script>
+      class SotlUiApp extends BaseUiElement {
+
+          static get is() { return 'sotl-ui-app'; }
+
+          static get properties() {
+              return {
+                  page: {
+                      type: String,
+                      reflectToAttribute: true,
+                      observer: '_pageChanged',
+                  },
+                  rootPattern: String,
+                  routeData: Object,
+                  subroute: String,
+                  menu1Open: {
+                      type: Boolean,
+                      value: true
+                  },
+                  menu2Open: {
+                      type: Boolean,
+                      value: true
+                  },
+                  selectedSection: {
+                      type: Number,
+                      value: 0
+                  }
+              };
+          }
+
+          static get observers() {
+              return [
+                  '_routePageChanged(routeData.page)',
+                  '_menu1OpenChanged(menu1Open)',
+                  '_menu2OpenChanged(menu2Open)'
+              ];
+          }
+
+          ready(){
+              super.ready();
+          }
+
+          onTapMenuButton(){
+              var drawerLayout = this.$.drawerLayout;
+              if (drawerLayout.forceNarrow || !drawerLayout.narrow) {
+                  drawerLayout.forceNarrow = !drawerLayout.forceNarrow;
+              } else {
+                  drawerLayout.drawer.toggle();
+              }
+          }
+
+          toggleMenu1(){
+              this.set('menu1Open', !this.menu1Open);
+          }
+
+          toggleMenu2(){
+              this.set('menu2Open', !this.menu2Open);
+          }
+
+          _menu1OpenChanged(menu1Open){
+              this._toggleMenuButton(this.$.menu1ToggleButton,menu1Open);
+          }
+
+          _menu2OpenChanged(menu2Open){
+              this._toggleMenuButton(this.$.menu2ToggleButton, menu2Open);
+          }
+
+          _toggleMenuButton(button, open){
+              if (open) {
+                  button.setAttribute('upside-down', '');
+              } else {
+                  if (button.hasAttribute('upside-down')) {
+                      button.removeAttribute('upside-down');
+                  }
+              }
+          }
+
+          onSelectMenu1(){
+              this.set('menu1Open', true);
+              this.set('menu2Open', false);
+              this.set('route.path', '/clients');
+          }
+
+          onSelectMenu2(){
+              this.set('menu1Open', false);
+              this.set('menu2Open', true);
+              this.set('route.path', '/users');
+          }
+
+          getSelectedSection(page){
+              let sections = this.shadowRoot.querySelectorAll('.menu-section-container');
+              for(let i=0; i<sections.length; i++){
+                  let section = sections[i];
+                  let links = section.querySelectorAll('a');
+                  for(let j=0; j<links.length; j++){
+                      let link = links[j];
+                      if(link.name === page){
+                          return i;
+                      }
+                  }
+              }
+              return -1;
+          }
+
+          _routePageChanged(page) {
+              // Polymer 2.0 will call with `undefined` on initialization.
+              // Ignore until we are properly called with a string.
+              if (page === undefined) {
+                  return;
+              }
+
+              // If no page was found in the route data, page will be an empty string.
+              // Deault to 'view1' in that case.
+              this.page = page || 'statements';
+
+              // Close a non-persistent drawer when the page & route are changed.
+              if (!this.$.drawer.persistent) {
+                  this.$.drawer.close();
+              }
+          }
+
+          _pageChanged(page) {
+              // Load page import on demand. Show 404 page if fails
+              let self = this;
+              self.set('selectedSection', self.getSelectedSection(page));
+              let resolvedPageUrl = self.resolveUrl('./pages/' + page + '-page.html');
+              Polymer.importHref(
+                  resolvedPageUrl,
+                  function(){
+                      let pageElement = self.$.pages.querySelector(page + '-page');
+                      pageElement.reload();
+                  },
+                  self._showPage404.bind(self),
+                  true);
+          }
+
+          _showPage404() {
+              this.page = 'view404';
+          }
+      }
+
+      window.customElements.define(SotlUiApp.is, SotlUiApp);
+  </script>
+</dom-module>

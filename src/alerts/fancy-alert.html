@@ -1,0 +1,48 @@
+<link rel="import" href="../base-element.html">
+<link rel="import" href="../styles/shared-ui-styles.html">
+<dom-module id="fancy-alert">
+
+    <template>
+        <style include="shared-ui-styles"></style>
+        <div hidden$="[[!visible]]" class$="[[alertClass]]">[[message]]</div>
+    </template>
+
+    <script>
+
+        class FancyAlert extends BaseElement {
+            static get is() {
+                return 'fancy-alert';
+            }
+
+            static get properties() {
+                return {
+                    alertClass: {
+                        type: String,
+                        value: 'alert',
+                        notify: true
+                    },
+                    message: {
+                        type: String,
+                        value: '',
+                        notify: true
+                    },
+                    visible: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    }
+                }
+            }
+            static get observers(){
+                return [
+                    '_messageChanged(message)'
+                ]
+            }
+            _messageChanged(message){
+                this.set('visible', this._isNotEmpty(message));
+            }
+        }
+        window.customElements.define(FancyAlert.is, FancyAlert);
+    </script>
+
+</dom-module>

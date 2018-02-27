@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../buttons/fancy-button.html">
+<dom-module id="confirmation-modal">
+
+    <template>
+        <paper-dialog id="modal" modal>
+            <div><iron-icon icon="warning"></iron-icon>&nbsp;&nbsp;Please Confirm</div>
+            <p><span>[[message]]</span></p>
+            <div class="buttons">
+                <fancy-button button-class="button-primary" on-tap="onTapOkButton">Ok</fancy-button>
+                <fancy-button button-class="button-grey" on-tap="onTapCloseButton">Cancel</fancy-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+
+        class ConfirmationModal extends Polymer.Element {
+            static get is() {
+                return 'confirmation-modal';
+            }
+
+            static get properties() {
+                return {
+                    message: String,
+                    _callback: Object
+                };
+            }
+
+            confirm(message){
+                let self = this;
+                return new Promise(function(resolve){
+                    self.set('message', message);
+                    self.open();
+                    self._callback = resolve;
+                });
+            }
+
+            open(){
+                this.$.modal.open();
+            }
+
+            close(){
+                if(this._callback){
+                    this._callback(false);
+                    this._callback = null;
+                }
+                this.$.modal.close();
+            }
+
+            onTapOkButton(){
+                if(this._callback){
+                    this._callback(true);
+                    this._callback = null;
+                }
+                this.close();
+            }
+
+            onTapCloseButton(){
+                this.close();
+            }
+
+        }
+        window.customElements.define(ConfirmationModal.is, ConfirmationModal);
+    </script>
+
+</dom-module>
