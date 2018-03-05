@@ -1,19 +1,17 @@
-<link rel="import" href="../common/base-ui-element.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../base-element.html">
+<link rel="import" href="../cards/statement-card.html">
 <link rel="import" href="../styles/shared-ui-styles.html">
 <dom-module id="statements-page">
     <template>
         <style include="shared-ui-styles"> </style>
-        <lambda-service id="lambdaService"></lambda-service>
-        <div>CONTENT HERE</div>
+        <div class="padding-10">
+            <statement-card></statement-card>
+        </div>
     </template>
 
     <script>
 
-        class StatementsPage extends BaseUiElement {
+        class StatementsPage extends BaseElement {
 
             static get is() { return 'statements-page'; }
 

@@ -14,11 +14,11 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="./common/base-ui-element.html">
+<link rel="import" href="./base-element.html">
 <link rel="import" href="app-icons.html">
 <link rel="import" href="pages/statements-page.html">
 
-<dom-module id="sotl-ui-app">
+<dom-module id="sotl-app">
   <template>
     <style>
 
@@ -211,9 +211,9 @@
   </template>
 
   <script>
-      class SotlUiApp extends BaseUiElement {
+      class SotlApp extends BaseElement {
 
-          static get is() { return 'sotl-ui-app'; }
+          static get is() { return 'sotl-app'; }
 
           static get properties() {
               return {
@@ -229,10 +229,6 @@
                       type: Boolean,
                       value: true
                   },
-                  menu2Open: {
-                      type: Boolean,
-                      value: true
-                  },
                   selectedSection: {
                       type: Number,
                       value: 0
@@ -243,8 +239,7 @@
           static get observers() {
               return [
                   '_routePageChanged(routeData.page)',
-                  '_menu1OpenChanged(menu1Open)',
-                  '_menu2OpenChanged(menu2Open)'
+                  '_menu1OpenChanged(menu1Open)'
               ];
           }
 
@@ -271,10 +266,6 @@
 
           _menu1OpenChanged(menu1Open){
               this._toggleMenuButton(this.$.menu1ToggleButton,menu1Open);
-          }
-
-          _menu2OpenChanged(menu2Open){
-              this._toggleMenuButton(this.$.menu2ToggleButton, menu2Open);
           }
 
           _toggleMenuButton(button, open){
@@ -340,7 +331,7 @@
                   resolvedPageUrl,
                   function(){
                       let pageElement = self.$.pages.querySelector(page + '-page');
-                      pageElement.reload();
+                      //pageElement.reload();
                   },
                   self._showPage404.bind(self),
                   true);
@@ -351,6 +342,6 @@
           }
       }
 
-      window.customElements.define(SotlUiApp.is, SotlUiApp);
+      window.customElements.define(SotlApp.is, SotlApp);
   </script>
 </dom-module>

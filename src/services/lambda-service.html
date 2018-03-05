@@ -23,6 +23,11 @@
                 this.set('auth', this.$.cookie.getValue());
             }
 
+            helloWorld() {
+                let url = 'https://6mfb1ekwk6.execute-api.us-east-1.amazonaws.com/prod/hello';
+                return this.getRequest(url, this.auth);
+            }
+
             /*
             findSummaryItemsByPaymentScheduleId(paymentScheduleId) {
                 return this.getRequest(this.baseUrl + '/summary-items/search/findByPaymentScheduleIdAndDeleted?paymentScheduleId='+paymentScheduleId+'&deleted=false', this.auth);

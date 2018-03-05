@@ -1,0 +1,51 @@
+<link rel="import" href="../base-element.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../buttons/fancy-button.html">
+<link rel="import" href="../alerts/fancy-alert.html">
+<link rel="import" href="../services/lambda-service.html">
+<link rel="import" href="../styles/shared-ui-styles.html">
+<link rel="import" href="../app-icons.html">
+<dom-module id="statement-card">
+    <template>
+        <style include="shared-ui-styles">
+            paper-card {
+                width: 100%;
+            }
+        </style>
+        <lambda-service id="lambdaService"></lambda-service>
+        <paper-card heading="Statements">
+            <div class="card-content">
+                [[message]]
+            </div>
+        </paper-card>
+    </template>
+    <script>
+        class StatementCard extends BaseElement {
+
+            static get is() {
+                return 'statement-card';
+            }
+
+            static get properties() {
+                return {
+                    message: String
+                }
+            }
+
+            ready(){
+                super.ready();
+                let self = this;
+                self.$.lambdaService.helloWorld().then((data) => {
+                    self.set('message', data.message);
+                }).catch((error) => {
+                    console.error(error);
+                    self.alert(error);
+                });
+            }
+
+        }
+        window.customElements.define(StatementCard.is, StatementCard);
+    </script>
+
+</dom-module>
