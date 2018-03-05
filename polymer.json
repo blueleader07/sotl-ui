@@ -1,11 +1,8 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/sotl-ui-app.html",
+  "shell": "src/sotl-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/pages/statements-page.html"
   ],
   "sources": [
     "images/**/*",
