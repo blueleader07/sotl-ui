@@ -95,6 +95,14 @@
                 }
             }
 
+            openSaving(headerText){
+                this._getSavingModal().open(headerText);
+            }
+
+            closeSaving(){
+                this._getSavingModal().close();
+            }
+
             savingError(error){
                 this._getSavingModal().set('error', error);
             }

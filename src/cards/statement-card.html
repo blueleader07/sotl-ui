@@ -5,6 +5,8 @@
 <link rel="import" href="../alerts/fancy-alert.html">
 <link rel="import" href="../services/lambda-service.html">
 <link rel="import" href="../styles/shared-ui-styles.html">
+<link rel="import" href="../buttons/fancy-button.html">
+<link rel="import" href="../alerts/fancy-alert.html">
 <link rel="import" href="../app-icons.html">
 <dom-module id="statement-card">
     <template>
@@ -16,7 +18,11 @@
         <lambda-service id="lambdaService"></lambda-service>
         <paper-card heading="Statements">
             <div class="card-content">
-                [[message]]
+                <fancy-button button-class="button button-primary" on-tap="onTapDownloadButton"><iron-icon icon="save"></iron-icon>&nbsp;&nbsp;Download PDF</fancy-button>
+                <div style="margin-top: 15px">
+                    <fancy-alert alert-class="alert alert-info" message="[[successMessage]]" visible="[[successMessage]]"></fancy-alert>
+                    <fancy-alert alert-class="alert alert-danger" message="[[errorMessage]]" visible="[[errorMessage]]"></fancy-alert>
+                </div>
             </div>
         </paper-card>
     </template>
@@ -29,19 +35,34 @@
 
             static get properties() {
                 return {
-                    message: String
+                    successMessage: String,
+                    errorMessage: String
                 }
             }
 
-            ready(){
-                super.ready();
+            onTapDownloadButton(){
                 let self = this;
+                self.set('successMessage', '');
+                self.set('errorMessage', '');
+                self.openSaving('Generating PDF...');
                 self.$.lambdaService.helloWorld().then((data) => {
-                    self.set('message', data.message);
+                    self.closeSaving();
+                    self.set('successMessage', data.message);
+                    self.download(data.url);
                 }).catch((error) => {
+                    self.closeSaving();
                     console.error(error);
-                    self.alert(error);
+                    self.set('errorMessage', data.message);
                 });
+            }
+
+            download(url){
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = 'agent_document.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }
 
         }

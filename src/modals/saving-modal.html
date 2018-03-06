@@ -63,7 +63,8 @@
                 }
             }
 
-            open(){
+            open(headerText){
+                this.set('headerText', headerText || 'Saving...');
                 this.set('error', '');
                 this.$.modal.open();
             }
